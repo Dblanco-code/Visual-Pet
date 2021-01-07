@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+       body{
+           font-family:monospace;
+           font-size: 25px;
+        }
+       .pet-name{
+            color:black;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .header {
+            padding: 10px;
+            background-color: rgb(46, 134, 235);
+        }
+        .main{
+            display: grid; /* this tells `main` to be a grid*/ /* why doesnt a column work here*/
+            grid-template-columns: 1fr 1fr; /* this next line tells `main` that, since it is a grid now, to separate into 2 equal columns*/
+            
+        }
+        .image-area{
+            display: grid;
+            justify-items: center;
+            background-color:rgb(46, 134, 235);
+            
+        }
+        .interactive-area{
+            justify-items: center;
+            background-color:goldenrod;
+            align-items: center;
+            display: grid;
+        }
+        .pet-image{
+            height: 500px;
+            max-width: 100%;
+            
+        }
+        .activity-icon{
+            height: 40px;
+            
+        }
+        .activity-row{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 90%;
+            padding: 0 1rem;
+            align-items: center;
+        }
+        .activity-button{
+            background-color: aliceblue;
+            box-shadow: 0 0 5px 0 grey;
+            border-radius: 8px;
+            color:black;
+            cursor: pointer;
+            height: 100%;
+            display: grid;
+            justify-items: center;
+            align-items: center;
+        }         
+            
+        
+
+        .hidden { /*to make the buttons disappear when passed out*/
+            display:none;
+        }
+    </style>
+  </head>
+
+
+  <body>
+    <div class="header">
+        <div>This is my Pet and Friend</div>
+        <div class="pet-name">Tony Tony Chopper</div>
+        <!--Best animal in One Piece!-->
+        <div class="description">The best Raccoon Dog on the plant!.</div>
+    </div>
+    <div class="main">
+        <div class="image-area">
+           <img id="pet-image" class="pet-image" src="Neutral.gif"/>
+        </div>
+       
+        <div class="interactive-area">
+            <div id="food-row" class="activity-row"> <!--Food-->
+                <img class="activity-icon" id="food" src="cotton-candy-550209.png" />
+                <div class="activity-stat" id="food-stat">50</div>
+                <div class="activity-button" id="food-button" onclick=giveFood()>Eat Cotton Candy</div>
+              </div>
+
+            <div id="water-row" class="activity-row"> <!--Water-->
+                <img class="activity-icon" id="water" src="water.png" />
+                <div class="activity-stat" id="water-stat">50</div>
+                <div class="activity-button" id="water-button" onclick=giveWater()>Drink  Water</div>
+              </div>
+
+            <div id="activity-row" class="activity-row"> <!--Activity-->
+                <img class="activity-icon" id="activity" src="sailing-19-136102.webp" />
+                <div class="activity-stat" id="activity-stat">50</div>
+                <div class="activity-button" id="activity-button" onclick=giveActivity()>Sail the New World</div>
+              </div>
+
+            <div id="end-game" class="end-game hidden"> 
+                <div class="message">Chopper has passed out!</div>    
+                <div class="activity-button restart-button" onclick="restart()">Restart</div>
+              </div>
+        </div>
+    </div>
+  </body>
+
+
+  <script>
+        /* Variables to track numbers that represent these stats*/
+        var food = 50 
+        var water = 50
+        var activity = 50 
+
+        var hasNotPassedOut = true /* to stop the toggleinteractivity from running forever*/
+       
+        /* Function to give Food, Connected to Line 83*/
+        var giveFood = () => {
+            food = food + 15                                /* Task: increase the food stat by 15 every time we click the food button*/
+            water = water - 5
+            activity = activity - 5                         /* When food goes up, need for water and activity go up, so the values decrease*/
+
+            updateHTML()
+        }
+
+        /* Function to give Water*/
+        var giveWater = () => {
+            water = water + 15 
+            food = food - 5
+            activity = activity - 2
+
+            updateHTML()
+        }
+
+        /*Function to give Activity*/
+        var giveActivity = () => {
+            activity = activity + 30
+            water = water - 15
+            food = food - 10 
+
+            updateHTML()
+        }
+
+        /* Function to update HTML*/
+        var updateHTML = () => {
+            document.getElementById("food-stat").innerHTML = food
+            document.getElementById("water-stat").innerHTML = water
+            document.getElementById("activity-stat").innerHTML = activity
+
+            var lowestStat = Math.min(food, water, activity)    /*this uses Math.min to figure out the lowest value bwt food, water, activity*/
+            var imageSrc 
+
+            if (lowestStat <= 0) {
+                imageSrc = 'passed-out.gif'
+                if (hasNotPassedOut) {
+                    toggleInteractivity()
+                    hasNotPassedOut = false
+                }
+            } else if (lowestStat < 25) {
+                imageSrc = 'tired.gif'
+            } else if (lowestStat < 75) {
+                imageSrc = 'neutral.gif'
+            } else if (lowestStat < 150) {
+                imageSrc = 'upbeat.gif'
+            } else {
+                imageSrc = 'exuberant.gif'
+            }
+
+            document.getElementById("pet-image").src = imageSrc
+        } /* it works :D */
+
+        /* Function to have maintaince*/
+        var agePet = () => {
+            food = food - 4
+            water = water - 8 
+            activity = activity - 2 
+
+            updateHTML()
+        }
+
+        setInterval(agePet, 2000) /* runs the var agePet every 2 seconds */
+
+        /* Function to toggle buttons after Chopper passes out*/
+        var toggleInteractivity = () => {
+            document.getElementById("food-row").classList.toggle("hidden")
+            document.getElementById("water-row").classList.toggle("hidden")
+            document.getElementById("activity-row").classList.toggle("hidden")
+            document.getElementById("end-game").classList.toggle("hidden")
+        }
+
+        /* Function to restart*/
+        var restart = () => {
+            water = 50 
+            food = 50 
+            activity = 50 
+            hasNotPassedOut = true
+
+            toggleInteractivity()
+            updateHTML()
+        }
+  </script>
+</html>
